@@ -1,0 +1,34 @@
+# TEMPLATE ONLY. Replace every key and SteamID placeholder before use.
+# Generate this server's key with:
+#   WireSteam.exe init server.conf --address 10.77.0.1/32
+# Exchange public keys only. See INTERNET.md for Windows/WinNAT requirements.
+[Interface]
+PrivateKey = <SERVER_PRIVATE_KEY>
+Address = 10.77.0.1/32
+ListenPort = 51820
+MTU = 1280
+
+[WireSteam]
+AppID = 480
+VirtualPort = 40
+RelayOnly = true
+InternetMode = server
+InternetSubnet = 10.77.0.0/24
+ReconnectSeconds = 3
+SendRate = 4194304
+StatsSeconds = 10
+
+[Peer]
+PublicKey = <FIRST_CLIENT_PUBLIC_KEY>
+SteamID = <FIRST_CLIENT_STEAM_ID64>
+AllowedIPs = 10.77.0.2/32
+PersistentKeepalive = 25
+Dial = false
+
+# Delete this entire second Peer section if there is only one client.
+[Peer]
+PublicKey = <SECOND_CLIENT_PUBLIC_KEY>
+SteamID = <SECOND_CLIENT_STEAM_ID64>
+AllowedIPs = 10.77.0.3/32
+PersistentKeepalive = 25
+Dial = false

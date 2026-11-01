@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    { "path": "WireSteam.UI.exe", "component": "core" },
+    { "path": "WireSteam.exe", "component": "core" },
+    { "path": "WireSteamService.exe", "component": "core" },
+    { "path": "steam_api64.dll", "component": "core" },
+    { "path": "steam_appid.txt", "component": "core" },
+    { "path": "WireSteamSpeedServer.exe", "component": "speedtest" },
+    { "path": "WireSteamSpeedClient.exe", "component": "speedtest" },
+    { "path": "WireSteamTestServer.exe", "component": "testapps" },
+    { "path": "WireSteamTestClient.exe", "component": "testapps" },
+    { "path": "README.md", "component": "docs" },
+    { "path": "CONFIGURATION.md", "component": "docs" },
+    { "path": "GUI.md", "component": "docs" },
+    { "path": "INTERNET.md", "component": "docs" },
+    { "path": "SPEEDTEST.md", "component": "docs" },
+    { "path": "INSTALLER.md", "component": "docs" },
+    { "path": "FORWARDING.md", "component": "docs" },
+    { "path": "THIRD_PARTY_NOTICES.md", "component": "docs" },
+    { "path": "LICENSE", "component": "docs" },
+    { "path": "docs/images/overview.png", "component": "docs" },
+    { "path": "examples/port-forward.conf.example", "component": "docs" },
+    { "path": "examples/peer-a.conf.example", "component": "docs" },
+    { "path": "examples/peer-b.conf.example", "component": "docs" },
+    { "path": "examples/internet-client.conf.example", "component": "docs" },
+    { "path": "examples/internet-server.conf.example", "component": "docs" }
+  ]
+}

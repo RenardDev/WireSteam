@@ -1,0 +1,557 @@
+<Window x:Class="WireSteam.UI.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+	xmlns:controls="clr-namespace:WireSteam.UI.Controls"
+	Title="WIRESTEAM" Width="1100" Height="760" MinWidth="1000" MinHeight="680"
+	WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="False"
+	Background="{StaticResource BackgroundBrush}" Foreground="{StaticResource TextBrush}"
+	FontFamily="{StaticResource BodyFont}" UseLayoutRounding="True" SnapsToDevicePixels="True">
+	<shell:WindowChrome.WindowChrome>
+		<shell:WindowChrome CaptionHeight="48" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="10" UseAeroCaptionButtons="False" />
+	</shell:WindowChrome.WindowChrome>
+	<Window.Resources>
+		<Style x:Key="DashboardNav" TargetType="Button" BasedOn="{StaticResource NavButton}">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsDashboardVisible}" Value="True">
+					<Setter Property="Background" Value="#142B26" />
+					<Setter Property="BorderBrush" Value="#255243" />
+					<Setter Property="Foreground" Value="{StaticResource MintBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="LogsNav" TargetType="Button" BasedOn="{StaticResource NavButton}">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsLogsVisible}" Value="True">
+					<Setter Property="Background" Value="#142B26" />
+					<Setter Property="BorderBrush" Value="#255243" />
+					<Setter Property="Foreground" Value="{StaticResource MintBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="SettingsNav" TargetType="Button" BasedOn="{StaticResource NavButton}">
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding IsSettingsVisible}" Value="True">
+					<Setter Property="Background" Value="#142B26" />
+					<Setter Property="BorderBrush" Value="#255243" />
+					<Setter Property="Foreground" Value="{StaticResource MintBrush}" />
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+	</Window.Resources>
+	<Border Background="{StaticResource BackgroundBrush}" BorderBrush="#253345" BorderThickness="1" CornerRadius="10">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="48" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Background="#0B1019">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="230" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+					<Grid Margin="20,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="34" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Image x:Name="BrandLogo" Source="Assets/WireSteam.generated.png" Width="32" Height="34" VerticalAlignment="Center" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+						<!-- Center the visible capital glyphs, rather than the heading font's taller line box. -->
+						<TextBlock x:Name="BrandName" Grid.Column="1" Text="WIRESTEAM" FontFamily="{StaticResource HeadingFont}" FontSize="21" FontWeight="Bold" VerticalAlignment="Center" Margin="10,0,0,0"><TextBlock.RenderTransform><TranslateTransform Y="1.5" /></TextBlock.RenderTransform></TextBlock>
+					</Grid>
+					<StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="24,0,0,0">
+						<TextBlock Text="NETWORK CONTROL" Style="{StaticResource Eyebrow}" />
+						<Border Width="1" Height="12" Background="#2A3749" Margin="15,0" />
+						<TextBlock Text="{Binding EngineStatus, Converter={StaticResource Uppercase}}" FontSize="10" Foreground="#8EA2B9" TextTrimming="CharacterEllipsis" MaxWidth="340" />
+					</StackPanel>
+					<StackPanel Grid.Column="2" Orientation="Horizontal" shell:WindowChrome.IsHitTestVisibleInChrome="True" VerticalAlignment="Center" Margin="0,0,3,0">
+						<Button Style="{StaticResource ChromeButton}" Click="Window_Minimize" ToolTip="MINIMIZE" AutomationProperties.Name="MINIMIZE WINDOW" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+							<Path Data="M0,5 L10,5" Width="10" Height="10" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.1" />
+						</Button>
+						<Button Style="{StaticResource ChromeButton}" Click="Window_Maximize" ToolTip="MAXIMIZE OR RESTORE" AutomationProperties.Name="MAXIMIZE OR RESTORE WINDOW" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+							<Path Data="M0.5,0.5 L9.5,0.5 L9.5,9.5 L0.5,9.5 Z" Width="10" Height="10" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.1" />
+						</Button>
+						<Button Style="{StaticResource ChromeButton}" Click="Window_Close" ToolTip="CLOSE WINDOW" AutomationProperties.Name="CLOSE WINDOW" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+							<Path Data="M1,1 L9,9 M9,1 L1,9" Width="10" Height="10" Stroke="{StaticResource MutedBrush}" StrokeThickness="1.2" />
+						</Button>
+					</StackPanel>
+				</Grid>
+			</Border>
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="230" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border Background="{StaticResource RailBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,1,0" Padding="16,20,16,16">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+						<!-- Keep status anchored to the visible rail. Only the upper
+							controls scroll on a short or heavily scaled display. -->
+						<ScrollViewer x:Name="RailScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" CanContentScroll="False">
+							<Grid Height="{Binding ViewportHeight, ElementName=RailScroll}" MinHeight="420">
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" MinHeight="60" />
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+								<Grid Margin="5,0,5,12">
+									<TextBlock Text="TUNNEL WORKSPACE" Style="{StaticResource Eyebrow}" VerticalAlignment="Center" />
+									<Border HorizontalAlignment="Right" CornerRadius="4" Background="#172333" Padding="6,2">
+										<TextBlock Text="{Binding ProfileCountText, Converter={StaticResource Uppercase}}" Foreground="#9FB0C3" FontFamily="{StaticResource MonoFont}" FontSize="9" />
+									</Border>
+								</Grid>
+								<TextBox Grid.Row="1" Style="{StaticResource Input}" Text="{Binding ProfileFilter, UpdateSourceTrigger=PropertyChanged}" Tag="SEARCH PROFILES…" Margin="0,0,0,14" AutomationProperties.Name="SEARCH TUNNEL PROFILES" />
+								<ListBox x:Name="ProfilesList" Grid.Row="2" PreviewMouseRightButtonDown="Profile_RightClick" ContextMenuOpening="Profile_MenuOpening" ItemsSource="{Binding ProfilesView}" SelectedItem="{Binding Selected, Mode=TwoWay}" ItemContainerStyle="{StaticResource ProfileItem}"
+									Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" Padding="0" AutomationProperties.Name="TUNNEL PROFILES">
+									<ListBox.ContextMenu>
+										<ContextMenu />
+									</ListBox.ContextMenu>
+									<ListBox.ItemTemplate>
+										<DataTemplate>
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="15" />
+													<ColumnDefinition Width="*" />
+												</Grid.ColumnDefinitions>
+												<Ellipse Width="5" Height="5" Fill="{Binding StateColor}" VerticalAlignment="Top" Margin="0,5,0,0" HorizontalAlignment="Left" />
+												<StackPanel Grid.Column="1">
+													<TextBlock Text="{Binding Name}" Foreground="{StaticResource TextBrush}" FontWeight="SemiBold" FontSize="12" TextTrimming="CharacterEllipsis" />
+													<TextBlock Text="{Binding Addresses}" FontFamily="{StaticResource MonoFont}" FontSize="9" Foreground="#8DA698" Margin="0,5,0,0" TextTrimming="CharacterEllipsis" />
+													<TextBlock Text="{Binding State, Converter={StaticResource Uppercase}}" FontSize="10" Foreground="{Binding StateColor}" Margin="0,3,0,0" />
+												</StackPanel>
+											</Grid>
+										</DataTemplate>
+									</ListBox.ItemTemplate>
+								</ListBox>
+								<Grid Grid.Row="3" Margin="0,12,0,0">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="8" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Button Command="{Binding ImportCommand}" Style="{StaticResource SecondaryButton}" FontSize="10" Padding="7,9" ToolTip="IMPORT A WIRESTEAM CONFIGURATION" AutomationProperties.Name="IMPORT CONFIGURATION">
+										<StackPanel Orientation="Horizontal">
+											<controls:TechIcon Kind="Import" Width="14" Height="14" Margin="0,0,6,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+											<TextBlock Text="IMPORT" FontSize="10" VerticalAlignment="Center" />
+										</StackPanel>
+									</Button>
+									<Button Grid.Column="2" Command="{Binding NewCommand}" Style="{StaticResource SecondaryButton}" FontSize="10" Padding="1,9" AutomationProperties.Name="NEW TUNNEL">
+										<StackPanel Orientation="Horizontal">
+											<controls:TechIcon Kind="Add" Width="14" Height="14" Margin="0,0,6,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+											<TextBlock Text="NEW TUNNEL" FontSize="10" VerticalAlignment="Center" />
+										</StackPanel>
+									</Button>
+								</Grid>
+								<StackPanel Grid.Row="4" Margin="0,19,0,0">
+									<Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,0,0,16" />
+									<Button Command="{Binding ShowDashboardCommand}" Style="{StaticResource DashboardNav}">
+										<StackPanel Orientation="Horizontal">
+											<controls:TechIcon Kind="Overview" Width="20" Height="20" Margin="0,0,11,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+											<TextBlock Text="OVERVIEW" VerticalAlignment="Center" />
+										</StackPanel>
+									</Button>
+									<Button Command="{Binding ShowLogsCommand}" Style="{StaticResource LogsNav}">
+										<StackPanel Orientation="Horizontal">
+											<controls:TechIcon Kind="Logs" Width="20" Height="20" Margin="0,0,11,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+											<TextBlock Text="EVENT LOG" VerticalAlignment="Center" />
+										</StackPanel>
+									</Button>
+									<Button Command="{Binding ShowSettingsCommand}" Style="{StaticResource SettingsNav}">
+										<StackPanel Orientation="Horizontal">
+											<controls:TechIcon Kind="Settings" Width="20" Height="20" Margin="0,0,11,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+											<TextBlock Text="SETTINGS" VerticalAlignment="Center" />
+										</StackPanel>
+									</Button>
+								</StackPanel>
+							</Grid>
+						</ScrollViewer>
+						<Border x:Name="RailStatus" Grid.Row="1" Background="#101C28" BorderBrush="#1E3041" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,16,0,0">
+							<StackPanel>
+								<StackPanel Orientation="Horizontal">
+									<Ellipse Fill="{StaticResource MintBrush}" Width="5" Height="5" Margin="0,0,8,0" />
+									<TextBlock Text="{Binding ActiveCountText, Converter={StaticResource Uppercase}}" FontSize="10" Foreground="#C4D4E3" />
+								</StackPanel>
+								<TextBlock Text="STEAM P2P / SDR" Style="{StaticResource Eyebrow}" FontSize="8" Margin="13,6,0,0" />
+							</StackPanel>
+						</Border>
+					</Grid>
+				</Border>
+
+				<Grid Grid.Column="1" Margin="24,18,24,15">
+					<ScrollViewer Visibility="{Binding IsDashboardVisible, Converter={StaticResource BoolToVisibility}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+						<StackPanel Margin="0,0,4,0">
+							<Grid Margin="0,0,0,16">
+								<TextBlock Text="OVERVIEW" Style="{StaticResource PageTitle}" />
+								<StackPanel x:Name="OverviewModeContainer" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" ToolTip="CONFIGURED ROUTING ROLE. THIS IS NOT AN INTERNET CONNECTIVITY TEST.">
+									<Path Data="M0,4 L4,0 L8,4 L4,8 Z" Stroke="#466252" StrokeThickness="1" Margin="0,0,8,0" />
+									<TextBlock x:Name="OverviewModeBadge" Text="{Binding Selected.InternetModeLabel, FallbackValue=NETWORK MODE, TargetNullValue=NETWORK MODE}" Style="{StaticResource Eyebrow}" FontSize="9" />
+								</StackPanel>
+							</Grid>
+							<StackPanel>
+								<StackPanel.Style>
+									<Style TargetType="StackPanel">
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding Selected}" Value="{x:Null}">
+												<Setter Property="Visibility" Value="Collapsed" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</StackPanel.Style>
+								<Border Style="{StaticResource Card}" Padding="20,18" Margin="0,0,0,12" BorderBrush="#284A43">
+									<Border.Background>
+										<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+											<GradientStop Color="#142A29" Offset="0" />
+											<GradientStop Color="#101824" Offset="0.8" />
+										</LinearGradientBrush>
+									</Border.Background>
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="58" />
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="192" />
+										</Grid.ColumnDefinitions>
+										<Border Width="43" Height="48" CornerRadius="11" Background="#1B3830" BorderBrush="#2D6151" BorderThickness="1" VerticalAlignment="Top">
+											<Image Source="Assets/WireSteam.generated.png" Width="34" Height="38" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality" />
+										</Border>
+										<StackPanel Grid.Column="1" Margin="0,0,12,0">
+											<TextBlock Text="SELECTED TUNNEL" Style="{StaticResource Eyebrow}" FontSize="9" Foreground="#86AB9E" />
+											<TextBlock x:Name="SelectedAlias" Text="{Binding Selected.Name}" FontFamily="{StaticResource HeadingFont}" FontSize="26" FontWeight="Bold" Margin="0,3,0,4" TextTrimming="CharacterEllipsis" />
+											<StackPanel Orientation="Horizontal">
+												<TextBlock Text="{Binding Selected.Addresses}" FontFamily="{StaticResource MonoFont}" FontSize="11" Foreground="#B4CBC5" />
+												<Border Background="#183B30" CornerRadius="4" Padding="7,2" Margin="12,0,0,0">
+													<TextBlock Text="{Binding Selected.State, Converter={StaticResource Uppercase}}" Foreground="{Binding Selected.StateColor}" FontSize="9" FontWeight="Bold" />
+												</Border>
+											</StackPanel>
+											<TextBlock x:Name="SelectedDetail" Text="{Binding Selected.Detail, Converter={StaticResource Uppercase}}" FontSize="11" Foreground="#91A99F" Margin="0,9,0,0" TextTrimming="CharacterEllipsis" />
+											<Grid Margin="0,7,0,0" Visibility="{Binding Selected.Running, Converter={StaticResource BoolToVisibility}}">
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition Width="*" />
+												</Grid.ColumnDefinitions>
+												<TextBlock Text="LOCAL STEAM" Foreground="{StaticResource MutedBrush}" FontSize="9" VerticalAlignment="Center" Margin="0,0,8,0" />
+												<TextBlock x:Name="LocalSteamIdentity" Grid.Column="1" Text="{Binding Selected.LocalIdentityText}" ToolTip="{Binding Selected.LocalIdentityText}" Foreground="#A8C9C0" FontSize="10" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+											</Grid>
+										</StackPanel>
+										<StackPanel Grid.Column="2" VerticalAlignment="Center">
+											<Button x:Name="TunnelAction" Content="{Binding Selected.ActionText, Converter={StaticResource Uppercase}}" Command="{Binding ToggleCommand}" Height="40" FontSize="10">
+												<Button.Style>
+													<Style TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+														<Style.Triggers>
+															<DataTrigger Binding="{Binding Selected.Running}" Value="True">
+																<Setter Property="Background" Value="#1A3931" />
+																<Setter Property="Foreground" Value="{StaticResource MintBrush}" />
+																<Setter Property="BorderBrush" Value="#376F5C" />
+															</DataTrigger>
+														</Style.Triggers>
+													</Style>
+												</Button.Style>
+											</Button>
+											<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,6,0,0">
+												<Button Content="EDIT PROFILE" Command="{Binding EditCommand}" Style="{StaticResource IconButton}" FontSize="10" Padding="8,4" />
+												<TextBlock Text="·" Foreground="#426052" VerticalAlignment="Center" />
+												<Button Content="EXPORT" Command="{Binding ExportCommand}" Style="{StaticResource IconButton}" FontSize="10" Padding="8,4" />
+											</StackPanel>
+											<Button x:Name="DashboardForwardAction" Content="MANAGE FORWARDS" Command="{Binding ManageForwardsCommand}" Style="{StaticResource IconButton}" FontSize="10" Padding="8,4" HorizontalAlignment="Center" ToolTip="PUBLISH LOCAL TCP OR UDP SERVICES AT THIS TUNNEL’S VPN ADDRESS. DEACTIVATE THE TUNNEL BEFORE EDITING." />
+										</StackPanel>
+									</Grid>
+								</Border>
+
+								<Grid Margin="0,0,0,12">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="12" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="12" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Border Style="{StaticResource Card}" Padding="17,12">
+										<Grid>
+											<StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<controls:TrafficLed x:Name="ReceiveTrafficLed" ActivityAt="{Binding Selected.ReceiveActivityAt}" Width="6" Height="6" Margin="0,0,7,0" VerticalAlignment="Center" Foreground="{StaticResource MintBrush}" />
+													<TextBlock Text="RECEIVE" Style="{StaticResource Eyebrow}" FontSize="9" />
+												</StackPanel>
+												<TextBlock x:Name="ReceiveStat" FontFamily="{StaticResource MonoFont}" FontSize="25" Margin="0,4,0,0"><Run Text="{Binding Selected.ReceiveText, Mode=OneWay}" Foreground="{StaticResource MintBrush}" /><Run Text=" MBIT/S" Foreground="{StaticResource MutedBrush}" FontSize="10" /></TextBlock>
+											</StackPanel>
+											<controls:TechIcon Kind="Download" Width="26" Height="26" Foreground="{StaticResource MintBrush}" Accent="#4BAF89" HorizontalAlignment="Right" VerticalAlignment="Top" />
+										</Grid>
+									</Border>
+									<Border Grid.Column="2" Style="{StaticResource Card}" Padding="17,12">
+										<Grid>
+											<StackPanel>
+												<StackPanel Orientation="Horizontal">
+													<controls:TrafficLed x:Name="SendTrafficLed" ActivityAt="{Binding Selected.SendActivityAt}" Width="6" Height="6" Margin="0,0,7,0" VerticalAlignment="Center" Foreground="{StaticResource CyanBrush}" />
+													<TextBlock Text="SEND" Style="{StaticResource Eyebrow}" FontSize="9" />
+												</StackPanel>
+												<TextBlock x:Name="SendStat" FontFamily="{StaticResource MonoFont}" FontSize="25" Margin="0,4,0,0"><Run Text="{Binding Selected.SendText, Mode=OneWay}" Foreground="{StaticResource CyanBrush}" /><Run Text=" MBIT/S" Foreground="{StaticResource MutedBrush}" FontSize="10" /></TextBlock>
+											</StackPanel>
+											<controls:TechIcon Kind="Upload" Width="26" Height="26" Foreground="{StaticResource CyanBrush}" Accent="#3F819C" HorizontalAlignment="Right" VerticalAlignment="Top" />
+										</Grid>
+									</Border>
+									<Border Grid.Column="4" Style="{StaticResource Card}" Padding="17,12">
+										<Grid>
+											<StackPanel>
+												<TextBlock Text="PEER LATENCY" Style="{StaticResource Eyebrow}" FontSize="9" />
+												<TextBlock x:Name="LatencyStat" FontFamily="{StaticResource MonoFont}" FontSize="25" Margin="0,4,0,0"><Run Text="{Binding Selected.LatencyText, Mode=OneWay}" /><Run Text=" MS" Foreground="{StaticResource MutedBrush}" FontSize="10" /></TextBlock>
+											</StackPanel>
+											<controls:TechIcon Kind="Latency" Width="28" Height="26" Foreground="#8098B1" Accent="{StaticResource CyanBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" />
+										</Grid>
+									</Border>
+								</Grid>
+								<Grid Margin="0,0,0,12">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="1.4*" />
+										<ColumnDefinition Width="12" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Border Style="{StaticResource Card}" Padding="16,14" Height="300">
+										<Grid>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="*" />
+											</Grid.RowDefinitions>
+											<Grid>
+												<TextBlock Text="TRAFFIC ACTIVITY" Style="{StaticResource SectionTitle}" FontSize="14" />
+												<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+													<controls:TrafficLed x:Name="ChartReceiveLed" ActivityAt="{Binding Selected.ReceiveActivityAt}" Width="6" Height="6" Foreground="{StaticResource MintBrush}" Margin="0,0,6,0" />
+													<TextBlock Text="RX" FontFamily="{StaticResource MonoFont}" FontSize="11" Foreground="#AFCABE" />
+													<controls:TrafficLed x:Name="ChartSendLed" ActivityAt="{Binding Selected.SendActivityAt}" Width="6" Height="6" Foreground="{StaticResource CyanBrush}" Margin="12,0,6,0" />
+													<TextBlock Text="TX" FontFamily="{StaticResource MonoFont}" FontSize="11" Foreground="#AFC7D8" />
+												</StackPanel>
+											</Grid>
+											<controls:TrafficChart Grid.Row="1" Points="{Binding Selected.Traffic}" Margin="0,12,0,0" AutomationProperties.Name="RECENT TRAFFIC IN MEGABITS PER SECOND" ToolTip="RECENT TRANSPORT THROUGHPUT SAMPLES, IN MBIT/S" />
+										</Grid>
+									</Border>
+									<Border Grid.Column="2" Style="{StaticResource Card}" Padding="15,14" Height="300">
+										<Grid>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="*" />
+											</Grid.RowDefinitions>
+											<Grid>
+												<TextBlock Text="PEER LINKS" Style="{StaticResource SectionTitle}" FontSize="14" />
+												<Border Background="#1A293A" CornerRadius="4" Padding="7,2" HorizontalAlignment="Right">
+													<TextBlock Text="{Binding Selected.Peers.Count}" FontFamily="{StaticResource MonoFont}" FontSize="11" Foreground="#AFC2D6" />
+												</Border>
+											</Grid>
+											<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,6,0,0">
+												<ItemsControl x:Name="PeerLinks" ItemsSource="{Binding Selected.Peers}">
+													<ItemsControl.ItemTemplate>
+														<DataTemplate>
+															<Border BorderBrush="#263648" BorderThickness="0,0,0,1" Padding="0,10">
+																<Grid>
+																	<Grid.ColumnDefinitions>
+																		<ColumnDefinition Width="*" />
+																		<ColumnDefinition Width="Auto" />
+																	</Grid.ColumnDefinitions>
+																	<Grid.RowDefinitions>
+																		<RowDefinition Height="Auto" />
+																		<RowDefinition Height="Auto" />
+																		<RowDefinition Height="Auto" />
+																	</Grid.RowDefinitions>
+																	<StackPanel Margin="0,0,8,0">
+																		<TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}" FontFamily="{StaticResource MonoFont}" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis" />
+																		<TextBlock Text="{Binding SteamId}" FontSize="11" Foreground="#99ADC3" Margin="0,3,0,0" />
+																	</StackPanel>
+																	<StackPanel Grid.Column="1">
+																		<TextBlock Text="{Binding PingText, Converter={StaticResource Uppercase}}" Foreground="{StaticResource MintBrush}" FontFamily="{StaticResource MonoFont}" FontSize="11" HorizontalAlignment="Right" />
+																		<TextBlock Text="{Binding State, Converter={StaticResource Uppercase}}" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,4,0,0" HorizontalAlignment="Right" />
+																	</StackPanel>
+																	<Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="0,5,0,0">
+																		<Grid.ColumnDefinitions>
+																			<ColumnDefinition Width="Auto" />
+																			<ColumnDefinition Width="*" />
+																		</Grid.ColumnDefinitions>
+																		<TextBlock Text="{Binding AllowedIps}" FontSize="11" Foreground="#94A9BF" />
+																		<TextBlock Grid.Column="1" Text="{Binding Route, Converter={StaticResource Uppercase}}" FontSize="11" Foreground="#7F9AB5" Margin="10,0,0,0" TextTrimming="CharacterEllipsis" />
+																	</Grid>
+																	<Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,9,0,0">
+																		<Grid.ColumnDefinitions>
+																			<ColumnDefinition Width="*" />
+																			<ColumnDefinition Width="12" />
+																			<ColumnDefinition Width="*" />
+																		</Grid.ColumnDefinitions>
+																		<Grid.RowDefinitions>
+																			<RowDefinition Height="Auto" />
+																			<RowDefinition Height="Auto" />
+																			<RowDefinition Height="Auto" />
+																		</Grid.RowDefinitions>
+																		<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+																			<controls:TrafficLed ActivityAt="{Binding ReceiveActivityAt}" Width="6" Height="6" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{StaticResource MintBrush}" />
+																			<TextBlock Text="RECEIVE" Foreground="#9DB3C9" FontSize="10" FontWeight="SemiBold" />
+																		</StackPanel>
+																		<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+																			<controls:TrafficLed ActivityAt="{Binding SendActivityAt}" Width="6" Height="6" Margin="0,0,6,0" VerticalAlignment="Center" Foreground="{StaticResource CyanBrush}" />
+																			<TextBlock Text="SEND" Foreground="#9DB3C9" FontSize="10" FontWeight="SemiBold" />
+																		</StackPanel>
+																		<TextBlock Grid.Row="1" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Margin="0,3,0,0"><Run Text="{Binding ReceiveText, Mode=OneWay}" Foreground="{StaticResource MintBrush}" /><Run Text=" MBIT/S" FontSize="10" FontWeight="Normal" Foreground="#8FA7BD" /></TextBlock>
+																		<TextBlock Grid.Row="1" Grid.Column="2" FontFamily="{StaticResource MonoFont}" FontSize="13" FontWeight="Bold" Margin="0,3,0,0"><Run Text="{Binding SendText, Mode=OneWay}" Foreground="{StaticResource CyanBrush}" /><Run Text=" MBIT/S" FontSize="10" FontWeight="Normal" Foreground="#8FA7BD" /></TextBlock>
+																		<TextBlock Grid.Row="2" Text="{Binding ReceiveTotalText}" Foreground="#9CBFAC" FontSize="11" Margin="0,3,0,0" />
+																		<TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SendTotalText}" Foreground="#9EB7CE" FontSize="11" Margin="0,3,0,0" />
+																	</Grid>
+																</Grid>
+															</Border>
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+												</ItemsControl>
+											</ScrollViewer>
+										</Grid>
+									</Border>
+								</Grid>
+								<Border Style="{StaticResource Card}" Padding="16,12" Margin="0,0,0,12">
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto" />
+											<RowDefinition Height="Auto" />
+										</Grid.RowDefinitions>
+										<Grid>
+											<TextBlock Text="EVENT STREAM" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" />
+											<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+												<CheckBox x:Name="StreamAutoScroll" Content="AUTO-SCROLL" IsChecked="{Binding AutoScrollLogs, Mode=TwoWay}" Style="{StaticResource AutoScrollToggle}" Margin="0,0,16,0" ToolTip="FOLLOW THE NEWEST EVENTS. TURN OFF TO INSPECT EARLIER MESSAGES." AutomationProperties.Name="EVENT STREAM AUTO-SCROLL" />
+												<Button Command="{Binding ShowLogsCommand}" Style="{StaticResource IconButton}" Padding="3,2" FontSize="10" AutomationProperties.Name="VIEW ALL EVENTS">
+													<StackPanel Orientation="Horizontal">
+														<TextBlock Text="VIEW ALL" FontSize="10" VerticalAlignment="Center" />
+														<controls:TechIcon Kind="External" Width="14" Height="14" Margin="8,0,0,0" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+													</StackPanel>
+												</Button>
+											</StackPanel>
+										</Grid>
+										<controls:LogViewer x:Name="EventStream" Grid.Row="1" Height="100" Entries="{Binding Selected.Logs}" FollowTail="{Binding AutoScrollLogs}" Background="Transparent" BorderThickness="0" Padding="0" Margin="0,7,0,0" AutomationProperties.Name="EVENT STREAM" />
+									</Grid>
+								</Border>
+								<Grid Margin="2,0">
+									<TextBlock x:Name="StatusLine" Text="{Binding StatusDisplay}" FontSize="10" Foreground="{StaticResource MutedBrush}" TextTrimming="CharacterEllipsis" Margin="0,0,175,0" />
+									<TextBlock Text="WIREGUARD · STEAM TRANSPORT" Style="{StaticResource Eyebrow}" FontSize="8" HorizontalAlignment="Right" />
+								</Grid>
+							</StackPanel>
+							<Border Padding="38" Margin="0,28,0,0">
+								<Border.Style>
+									<Style TargetType="Border" BasedOn="{StaticResource Card}">
+										<Setter Property="Visibility" Value="Collapsed" />
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding Selected}" Value="{x:Null}">
+												<Setter Property="Visibility" Value="Visible" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Border.Style>
+								<StackPanel HorizontalAlignment="Center" MaxWidth="410">
+									<TextBlock Text="YOUR NETWORK. YOUR STEAM IDENTITY." Style="{StaticResource PageTitle}" TextAlignment="Center" TextWrapping="Wrap" />
+									<TextBlock Text="IMPORT A WIRESTEAM CONFIGURATION OR CREATE A TUNNEL TO CONNECT YOUR DEVICES OVER STEAM P2P AND SDR." TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" TextAlignment="Center" Margin="0,15,0,24" FontSize="13" LineHeight="21" />
+									<Button Content="IMPORT CONFIGURATION" Command="{Binding ImportCommand}" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Center" />
+									<Button Content="CREATE A NEW TUNNEL" Command="{Binding NewCommand}" Style="{StaticResource IconButton}" HorizontalAlignment="Center" Margin="0,8,0,0" />
+								</StackPanel>
+							</Border>
+						</StackPanel>
+					</ScrollViewer>
+					<Grid Visibility="{Binding IsLogsVisible, Converter={StaticResource BoolToVisibility}}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<StackPanel Margin="0,0,0,20">
+							<TextBlock Text="EVENT LOG" Style="{StaticResource PageTitle}" />
+							<TextBlock Text="CONNECTION EVENTS AND DIAGNOSTICS FOR THE SELECTED TUNNEL." Foreground="{StaticResource MutedBrush}" Margin="0,7,0,0" />
+						</StackPanel>
+						<Grid Grid.Row="1" Margin="0,0,0,15">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<TextBox Style="{StaticResource Input}" Text="{Binding LogFilter, UpdateSourceTrigger=PropertyChanged}" Tag="FILTER MESSAGES OR LEVELS…" Margin="0,0,12,0" />
+							<CheckBox x:Name="LogAutoScroll" Grid.Column="1" Content="AUTO-SCROLL" IsChecked="{Binding AutoScrollLogs, Mode=TwoWay}" Style="{StaticResource AutoScrollToggle}" Margin="0,0,16,0" VerticalAlignment="Center" ToolTip="FOLLOW THE NEWEST EVENTS. TURN OFF TO INSPECT EARLIER MESSAGES." AutomationProperties.Name="EVENT LOG AUTO-SCROLL" />
+							<Button Grid.Column="2" Content="COPY LOG" Command="{Binding CopyLogCommand}" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0" />
+							<Button Grid.Column="3" Content="CLEAR" Command="{Binding ClearLogsCommand}" Style="{StaticResource SecondaryButton}" />
+						</Grid>
+						<Border Grid.Row="2" Style="{StaticResource Card}" Padding="17">
+							<controls:LogViewer x:Name="EventLog" Entries="{Binding FilteredLogs}" FollowTail="{Binding AutoScrollLogs}" Background="Transparent" BorderThickness="0" Padding="0" AutomationProperties.Name="EVENT LOG" />
+						</Border>
+					</Grid>
+					<ScrollViewer Visibility="{Binding IsSettingsVisible, Converter={StaticResource BoolToVisibility}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+						<StackPanel Margin="0,0,4,0">
+							<TextBlock Text="SETTINGS" Style="{StaticResource PageTitle}" />
+							<TextBlock Text="INSPECT THE SELECTED PROFILE AND MANAGE ITS CONFIGURATION." Foreground="{StaticResource MutedBrush}" Margin="0,7,0,22" />
+							<Border Style="{StaticResource Card}" Padding="20">
+								<StackPanel>
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*" />
+											<ColumnDefinition Width="Auto" />
+										</Grid.ColumnDefinitions>
+										<StackPanel>
+											<TextBlock Text="PORT FORWARDING" Style="{StaticResource SectionTitle}" />
+											<TextBlock x:Name="PortForwardSummary" Text="{Binding Selected.PortForwardSummary, FallbackValue=NO PROFILE SELECTED, TargetNullValue=NO PROFILE SELECTED}" Foreground="{StaticResource MintBrush}" FontSize="11" Margin="0,7,0,0" />
+										</StackPanel>
+										<Button Grid.Column="1" Content="MANAGE FORWARDS" Command="{Binding ManageForwardsCommand}" Style="{StaticResource SecondaryButton}" VerticalAlignment="Center" Margin="14,0,0,0" />
+									</Grid>
+									<ItemsControl x:Name="PortForwardRules" ItemsSource="{Binding Selected.PortForwards}" Margin="0,12,0,0">
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<Border BorderBrush="#263648" BorderThickness="0,0,0,1" Padding="0,9">
+													<TextBlock Text="{Binding DisplayText}" FontFamily="{StaticResource MonoFont}" Foreground="#AFC7D8" FontSize="12" TextWrapping="Wrap" />
+												</Border>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+									<TextBlock Text="PEERS CONNECT TO THE LISTEN ENDPOINT. THE LOCAL TARGET STAYS ON THIS COMPUTER. FORWARDS RUN ONLY WHILE THIS TUNNEL IS ACTIVE; DEACTIVATE IT TO EDIT. AVAILABLE WHEN INTERNETMODE IS OFF OR SERVER." Foreground="{StaticResource MutedBrush}" FontSize="10" TextWrapping="Wrap" LineHeight="18" Margin="0,10,0,0" />
+								</StackPanel>
+							</Border>
+							<Border Style="{StaticResource Card}" Padding="20" Margin="0,14,0,0">
+								<StackPanel>
+									<TextBlock Text="INTERNET ROUTING" Style="{StaticResource SectionTitle}" />
+									<Grid Margin="0,16,0,0">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="*" />
+										</Grid.ColumnDefinitions>
+										<StackPanel x:Name="SettingsModeContainer" MinWidth="280" Margin="0,0,20,0">
+											<TextBlock Text="CONFIGURED ROLE" Style="{StaticResource Eyebrow}" />
+											<TextBlock x:Name="SettingsModeBadge" Text="{Binding Selected.InternetModeLabel, FallbackValue=NO PROFILE SELECTED, TargetNullValue=NO PROFILE SELECTED}" Foreground="{StaticResource MintBrush}" FontFamily="{StaticResource MonoFont}" FontSize="13" Margin="0,7,0,0" />
+										</StackPanel>
+										<StackPanel Grid.Column="1">
+											<TextBlock Text="GATEWAY SUBNET" Style="{StaticResource Eyebrow}" />
+											<TextBlock x:Name="InternetSubnetValue" Text="{Binding Selected.InternetSubnetText}" FontFamily="{StaticResource MonoFont}" FontSize="13" Margin="0,7,0,0" />
+										</StackPanel>
+									</Grid>
+									<TextBlock Text="ROUTING SETTINGS COME FROM THE PROFILE CONFIGURATION. AN ACTIVE TUNNEL DOES NOT CONFIRM INTERNET REACHABILITY." Foreground="{StaticResource MutedBrush}" FontSize="10" TextWrapping="Wrap" LineHeight="18" Margin="0,15,0,0" />
+									<TextBlock Text="USE EDIT CONFIGURATION TO SET THE ROLE: OFF, CLIENT, OR SERVER. GATEWAY MODE ALSO REQUIRES ITS VPN SUBNET. IMPORT A MATCHING FULL-TUNNEL CLIENT OR SERVER EXAMPLE TO CREATE A SEPARATE PROFILE." Foreground="{StaticResource MutedBrush}" FontSize="10" TextWrapping="Wrap" LineHeight="18" Margin="0,10,0,0" />
+									<TextBlock Text="EXAMPLE GATEWAY SETTINGS · NOT APPLIED AUTOMATICALLY" Style="{StaticResource Eyebrow}" FontSize="9" Margin="0,15,0,0" />
+									<TextBox Text="[WireSteam]&#x0a;InternetMode = server&#x0a;InternetSubnet = 10.77.0.0/24" IsReadOnly="True" Background="#0C131D" Foreground="#A5B8CC" BorderThickness="0" FontFamily="{StaticResource MonoFont}" FontSize="11" Padding="12" Margin="0,8,0,0" TextWrapping="NoWrap" />
+								</StackPanel>
+							</Border>
+							<Border Style="{StaticResource Card}" Padding="20" Margin="0,14,0,0">
+								<StackPanel>
+									<TextBlock Text="TRANSPORT ENGINE" Style="{StaticResource SectionTitle}" />
+									<TextBlock Text="{Binding EngineStatus, Converter={StaticResource Uppercase}}" Foreground="{StaticResource MutedBrush}" Margin="0,9,0,0" TextWrapping="Wrap" />
+									<TextBlock Text="WIREGUARD ENCRYPTS AND ROUTES YOUR NETWORK TRAFFIC. STEAMNETWORKINGSOCKETS CARRIES THE ENCRYPTED DATAGRAMS USING P2P OR SDR." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" LineHeight="20" Margin="0,12,0,0" />
+									<Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,16" />
+									<TextBlock Text="WIREGUARD ROUTES · STEAM TRANSPORT" FontFamily="{StaticResource MonoFont}" FontSize="10" Foreground="#A5B8CC" />
+								</StackPanel>
+							</Border>
+							<Border Style="{StaticResource Card}" Padding="20" Margin="0,14,0,0">
+								<StackPanel>
+									<TextBlock Text="LOCAL FILES &amp; TRAY" Style="{StaticResource SectionTitle}" />
+									<TextBlock Text="ENGINE EXECUTABLE" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,14,0,7" />
+									<TextBox x:Name="EnginePathValue" Style="{StaticResource Input}" Text="{Binding Backend.EnginePath, Mode=OneWay}" IsReadOnly="True" FontFamily="{StaticResource MonoFont}" FontSize="10" />
+									<TextBlock Text="PRIVATE PROFILE DIRECTORY" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,14,0,7" />
+									<TextBox Style="{StaticResource Input}" Text="{Binding Backend.ProfilesDirectory, Mode=OneWay}" IsReadOnly="True" FontFamily="{StaticResource MonoFont}" FontSize="10" />
+									<TextBlock Text="CLOSING OR MINIMIZING HIDES THE WINDOW TO THE TRAY. USE QUIT WIRESTEAM IN THE TRAY MENU TO DISCONNECT AND EXIT." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" LineHeight="19" Margin="0,15,0,0" />
+								</StackPanel>
+							</Border>
+						</StackPanel>
+					</ScrollViewer>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Border>
+</Window>

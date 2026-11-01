@@ -1,0 +1,18 @@
+# TEMPLATE ONLY: use `WireSteam.exe init b.conf --address 10.77.0.2/32`
+# to generate a fresh private key, then add the peer below.
+[Interface]
+PrivateKey = <GENERATED_PRIVATE_KEY_FOR_B>
+Address = 10.77.0.2/32
+ListenPort = 51820
+MTU = 1280
+
+[WireSteam]
+AppID = 480
+VirtualPort = 0
+RelayOnly = true
+
+[Peer]
+PublicKey = <PUBLIC_KEY_FROM_A>
+SteamID = <STEAM_ID64_OF_A>
+AllowedIPs = 10.77.0.1/32
+PersistentKeepalive = 25

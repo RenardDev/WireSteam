@@ -1,0 +1,43 @@
+name: Desktop build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  desktop:
+    name: Desktop ${{ matrix.configuration }}
+    runs-on: windows-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+      DOTNET_NOLOGO: "1"
+      DOTNET_GENERATE_ASPNET_CERTIFICATE: "false"
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+      - name: Restore desktop dependencies
+        run: dotnet restore gui/WireSteam.UI.csproj
+      - name: Build desktop application
+        run: dotnet build gui/WireSteam.UI.csproj --configuration ${{ matrix.configuration }} --no-restore -warnaserror
+      - name: Check desktop whitespace
+        run: dotnet format whitespace gui/WireSteam.UI.csproj --verify-no-changes --no-restore

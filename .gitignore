@@ -1,0 +1,28 @@
+# Local dependencies, builds and release artifacts
+/build/
+/build-*/
+/dist/
+/sdk/
+**/bin/
+**/obj/
+
+# Private profiles, keys, runtime state and diagnostics
+/configs/
+*.conf
+*.key
+*.log
+*.dmp
+*.mdmp
+!examples/*.conf.example
+
+# Workstation and IDE state
+/.vs/
+/.vscode/
+*.user
+*.suo
+*.sln.docstates
+*.VC.db
+*.VC.opendb
+.DS_Store
+Thumbs.db
+Desktop.ini

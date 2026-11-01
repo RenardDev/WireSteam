@@ -1,0 +1,29 @@
+# Replace key placeholders locally. Do not share private keys.
+# VPN peers use 10.77.0.1:25565 with the corresponding local service's protocol.
+[Interface]
+PrivateKey = <LOCAL_PRIVATE_KEY>
+Address = 10.77.0.1/32
+ListenPort = 51820
+MTU = 1280
+
+[WireSteam]
+AppID = 480
+VirtualPort = 40
+RelayOnly = true
+
+[Peer]
+PublicKey = <REMOTE_PUBLIC_KEY>
+SteamID = <REMOTE_STEAM_ID64>
+AllowedIPs = 10.77.0.2/32
+PersistentKeepalive = 25
+
+[PortForward]
+Protocol = TCP
+Listen = 10.77.0.1:25565
+Target = 127.0.0.1:25565
+
+# Optional second rule: requires a local UDP service on this target port.
+[PortForward]
+Protocol = UDP
+Listen = 10.77.0.1:25565
+Target = 127.0.0.1:25565

@@ -1,0 +1,28 @@
+# TEMPLATE ONLY. Replace every key and SteamID placeholder before use.
+# Generate this client's key with:
+#   WireSteam.exe init client.conf --address 10.77.0.2/32
+# Client 2 needs a different private key and address 10.77.0.3/32.
+# Requires Windows 10 22H2/11 x64, physical IPv4 Internet, and no active WARP/other VPN.
+# See INTERNET.md for the Steam bypass and IPv6/session-guard behavior.
+[Interface]
+PrivateKey = <CLIENT_PRIVATE_KEY>
+Address = 10.77.0.2/32
+DNS = 1.1.1.1, 9.9.9.9
+ListenPort = 51820
+MTU = 1280
+
+[WireSteam]
+AppID = 480
+VirtualPort = 40
+RelayOnly = true
+InternetMode = client
+ReconnectSeconds = 3
+SendRate = 4194304
+StatsSeconds = 10
+
+[Peer]
+PublicKey = <SERVER_PUBLIC_KEY>
+SteamID = <SERVER_STEAM_ID64>
+AllowedIPs = 0.0.0.0/0
+PersistentKeepalive = 25
+Dial = true

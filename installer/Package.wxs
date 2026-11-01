@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package Name="WireSteam" Manufacturer="WireSteam" Version="$(var.ProductVersion)" UpgradeCode="{A646733A-FA64-45AF-A446-61BF9FB53071}" Language="1033" Scope="perMachine" InstallerVersion="500" Compressed="yes">
+		<SummaryInformation Description="WireSteam Windows x64 installer" />
+		<MajorUpgrade Schedule="afterInstallExecute" AllowDowngrades="yes" />
+		<MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+		<Icon Id="WireSteamIcon" SourceFile="$(var.ProjectRoot)\gui\Assets\WireSteam.ico" />
+		<Property Id="ARPPRODUCTICON" Value="WireSteamIcon" />
+		<SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" Sequence="execute" />
+
+		<Property Id="MSIRESTARTMANAGERCONTROL" Value="DisableShutdown" />
+		<Property Id="MSIDISABLERMRESTART" Value="1" />
+		<Property Id="REBOOT" Value="ReallySuppress" />
+		<Property Id="INSTALLLEVEL" Value="1" />
+		<Property Id="INSTALLFOLDER" Secure="yes" />
+		<Launch Condition="Installed OR VersionNT64" Message="WireSteam requires Windows 10 22H2 or later on an x64 computer." />
+
+		<Property Id="WIRESTEAM_PREVIOUSINSTALLDIR" Secure="yes">
+			<RegistrySearch Id="PreviousInstallDirectory" Root="HKLM" Key="Software\WireSteam\Installer" Name="InstallDir" Type="raw" Bitness="always64" />
+		</Property>
+		<SetProperty Id="INSTALLFOLDER" Value="[WIRESTEAM_PREVIOUSINSTALLDIR]" After="AppSearch" Sequence="both" Condition="WIRESTEAM_PREVIOUSINSTALLDIR AND NOT INSTALLFOLDER" />
+
+		<StandardDirectory Id="ProgramFiles64Folder">
+			<Directory Id="INSTALLFOLDER" Name="WireSteam">
+				<Directory Id="ExamplesFolder" Name="examples" />
+				<Directory Id="DocsFolder" Name="docs">
+					<Directory Id="DocsImagesFolder" Name="images" />
+				</Directory>
+				<Component Id="InstallerMetadata" Guid="{C214A53B-F46A-42F7-A032-E8C2B635EE2D}" Bitness="always64">
+					<RegistryValue Root="HKLM" Key="Software\WireSteam\Installer" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+				</Component>
+			</Directory>
+		</StandardDirectory>
+
+		<StandardDirectory Id="ProgramMenuFolder">
+			<Directory Id="WireSteamProgramMenu" Name="WireSteam">
+				<Component Id="StartMenuShortcut" Guid="{9725E170-F931-4423-81A8-9B05309D3D63}" Bitness="always64">
+					<Shortcut Id="WireSteamStartMenu" Name="WireSteam" Description="WireGuard over Steam P2P and SDR" Target="[INSTALLFOLDER]WireSteam.UI.exe" WorkingDirectory="INSTALLFOLDER" Icon="WireSteamIcon" />
+					<RemoveFolder Id="RemoveWireSteamProgramMenu" On="uninstall" />
+					<RegistryValue Root="HKMU" Key="Software\WireSteam\Installer" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+				</Component>
+			</Directory>
+		</StandardDirectory>
+
+		<StandardDirectory Id="DesktopFolder">
+			<Component Id="DesktopShortcut" Guid="{42D2B51A-993D-419C-85B9-7528FD842B2F}" Bitness="always64">
+				<Shortcut Id="WireSteamDesktop" Name="WireSteam" Description="WireGuard over Steam P2P and SDR" Target="[INSTALLFOLDER]WireSteam.UI.exe" WorkingDirectory="INSTALLFOLDER" Icon="WireSteamIcon" />
+				<RegistryValue Root="HKMU" Key="Software\WireSteam\Installer" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</StandardDirectory>
+
+		<Feature Id="MainFeature" Title="WireSteam" Description="Desktop UI, Steam tunnel engine, documentation and safe example templates." Level="1" AllowAbsent="no" AllowAdvertise="no" Display="expand" ConfigurableDirectory="INSTALLFOLDER">
+			<ComponentGroupRef Id="Payload_core" />
+			<ComponentGroupRef Id="Payload_docs" />
+			<ComponentRef Id="InstallerMetadata" />
+			<ComponentRef Id="StartMenuShortcut" />
+			<Feature Id="SpeedTestFeature" Title="Speed test tools" Description="Concurrent command-line speed-test server and client." Level="1" AllowAdvertise="no">
+				<ComponentGroupRef Id="Payload_speedtest" />
+			</Feature>
+			<Feature Id="TestAppsFeature" Title="TCP and UDP test tools" Description="Test server and client for verifying tunnel connectivity." Level="1" AllowAdvertise="no">
+				<ComponentGroupRef Id="Payload_testapps" />
+			</Feature>
+			<Feature Id="DesktopShortcutFeature" Title="Desktop shortcut" Description="Add a WireSteam shortcut to the shared Windows desktop." Level="2" AllowAdvertise="no">
+				<ComponentRef Id="DesktopShortcut" />
+			</Feature>
+		</Feature>
+
+		<Binary Id="InstallerGuard" SourceFile="$(var.GuardPath)" />
+		<CustomAction Id="WireSteamValidateSession" BinaryRef="InstallerGuard" DllEntry="WireSteamValidateSession" Execute="immediate" Return="check" />
+		<CustomAction Id="WireSteamStopComponents" BinaryRef="InstallerGuard" DllEntry="WireSteamStopComponents" Execute="deferred" Impersonate="no" Return="check" />
+		<InstallUISequence>
+			<Custom Action="WireSteamValidateSession" After="CostFinalize" Condition="NOT Installed" />
+		</InstallUISequence>
+		<InstallExecuteSequence>
+			<Custom Action="WireSteamValidateSession" Before="InstallValidate" />
+			<Custom Action="WireSteamStopComponents" After="InstallInitialize" Condition="NOT Installed AND WIX_UPGRADE_DETECTED AND NOT REMOVE" />
+			<!-- Execute elevated cleanup before related-product removal and file installation. -->
+			<InstallExecute After="WireSteamStopComponents" />
+		</InstallExecuteSequence>
+
+		<UIRef Id="WireSteamUI" />
+		<UIRef Id="WixUI_ErrorProgressText" />
+	</Package>
+</Wix>

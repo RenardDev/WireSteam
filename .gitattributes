@@ -1,0 +1,10 @@
+# Preserve the established LF/CRLF convention and embedded payloads exactly.
+* -text
+* whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+
+*.png binary
+*.ico binary
+*.zip binary
+*.msi binary
+*.dll binary
+*.exe binary
